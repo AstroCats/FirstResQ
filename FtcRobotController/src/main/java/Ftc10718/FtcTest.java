@@ -134,7 +134,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
         FtcMenu driveDistanceMenu = new FtcMenu("Drive distance:", testMenu, this);
         FtcMenu turnDegreesMenu = new FtcMenu("Turn degrees:", testMenu, this);
 
-        testMenu.addChoice("Sensors test", Test.SENSORS_TEST);
+        testMenu.addChoice("Sensors Test", Test.SENSORS_TEST);
         testMenu.addChoice("Motors test", Test.MOTORS_TEST);
         testMenu.addChoice("Timed drive", Test.TIMED_DRIVE, driveTimeMenu);
         testMenu.addChoice("Distance drive", Test.DISTANCE_DRIVE, driveDistanceMenu);
@@ -191,19 +191,23 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
 
     private void doMotorsTest()
     {
-        dashboard.displayPrintf(9, "Motors Test: motorIndex=%d", motorIndex);
-        dashboard.displayPrintf(10, "Enc: LF=%d, RF=%d",
+        dashboard.displayPrintf(9, "Motors Test: index=%d", motorIndex);
+        dashboard.displayPrintf(10, "Enc: lf=%.0f, rf=%.0f",
                                 robot.motorFrontLeft.getPosition(),
                                 robot.motorFrontRight.getPosition());
-        dashboard.displayPrintf(11, "Enc: LB=%d, RB=%d",
+        dashboard.displayPrintf(11, "Enc: lr=%.0f, rr=%.0f",
                                 robot.motorBackLeft.getPosition(),
                                 robot.motorBackRight.getPosition());
+
         if (sm.isReady())
         {
             State state = (State)sm.getState();
             switch (state)
             {
                 case START:
+                    //
+                    // Spin a wheel for 5 seconds.
+                    //
                     switch (motorIndex)
                     {
                         case 0:
@@ -237,11 +241,18 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
                     motorIndex = (motorIndex + 1)%4;
                     timer.set(5.0, event);
                     sm.addEvent(event);
-                    sm.waitForEvents(State.START);
+                    sm.waitForEvents(State.DONE);
                     break;
 
                 case DONE:
                 default:
+                    //
+                    // We are done.
+                    //
+                    robot.motorFrontLeft.setPower(0.0);
+                    robot.motorFrontRight.setPower(0.0);
+                    robot.motorBackLeft.setPower(0.0);
+                    robot.motorBackRight.setPower(0.0);
                     sm.stop();
                     break;
             }
@@ -288,7 +299,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
                     break;
             }
         }
-    }   //doDriveTime
+    }   //doTimedDrive
 
     private void doDistanceDrive(double distance)
     {
@@ -323,7 +334,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
                     break;
             }
         }
-    }   //doDriveDistance
+    }   //doDistanceDrive
 
     private void doDegreesTurn(double degrees)
     {
@@ -358,6 +369,6 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
                     break;
             }
         }
-    }   //doTurnDegrees
+    }   //doDegreesTurn
 
 }   //class FtcTest
