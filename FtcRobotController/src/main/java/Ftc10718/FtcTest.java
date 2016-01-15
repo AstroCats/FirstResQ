@@ -10,7 +10,8 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
 {
     private enum Test
     {
-        SENSOR_TESTS,
+        SENSORS_TEST,
+        MOTORS_TEST,
         TIMED_DRIVE,
         DISTANCE_DRIVE,
         DEGREES_TURN
@@ -23,6 +24,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
     }   //enum State
 
     private HalDashboard dashboard;
+    private int motorIndex = 0;
 
     //
     // State machine.
@@ -33,7 +35,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
     //
     // Menu choices.
     //
-    private Test test = Test.SENSOR_TESTS;
+    private Test test = Test.SENSORS_TEST;
     private double driveTime = 0.0;
     private double driveDistance = 0.0;
     private double turnDegrees = 0.0;
@@ -75,8 +77,12 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
                 8, "%s: %s", test.toString(), state != null? state.toString(): "STOPPED!");
         switch (test)
         {
-            case SENSOR_TESTS:
-                doSensorTests();
+            case SENSORS_TEST:
+                doSensorsTest();
+                break;
+
+            case MOTORS_TEST:
+                doMotorsTest();
                 break;
 
             case TIMED_DRIVE:
@@ -128,7 +134,8 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
         FtcMenu driveDistanceMenu = new FtcMenu("Drive distance:", testMenu, this);
         FtcMenu turnDegreesMenu = new FtcMenu("Turn degrees:", testMenu, this);
 
-        testMenu.addChoice("Sensor tests", Test.SENSOR_TESTS);
+        testMenu.addChoice("Sensors test", Test.SENSORS_TEST);
+        testMenu.addChoice("Motors test", Test.MOTORS_TEST);
         testMenu.addChoice("Timed drive", Test.TIMED_DRIVE, driveTimeMenu);
         testMenu.addChoice("Distance drive", Test.DISTANCE_DRIVE, driveDistanceMenu);
         testMenu.addChoice("Degrees turn", Test.DEGREES_TURN, turnDegreesMenu);
@@ -160,7 +167,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
         dashboard.displayPrintf(0, "Test: %s", testMenu.getCurrentChoiceText());
     }   //doMenus
 
-    private void doSensorTests()
+    private void doSensorsTest()
     {
         //
         // Allow TeleOp to run so we can control the robot in test sensor mode.
@@ -170,7 +177,7 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
         // Read all sensors and display on the dashboard.
         // Drive the robot around to sample different locations of the field.
         //
-        dashboard.displayPrintf(9, "Sensor Tests:");
+        dashboard.displayPrintf(9, "Sensors Test:");
         dashboard.displayPrintf(10, "Enc:lf=%.0f,rf=%.0f",
                                 robot.motorFrontLeft.getPosition(),
                                 robot.motorFrontRight.getPosition());
@@ -180,7 +187,66 @@ public class FtcTest extends FtcTeleOp implements FtcMenu.MenuButtons
         dashboard.displayPrintf(12, "Gyro:Rate=%.1f,Heading=%.1f",
                                 robot.gyro.getZRotationRate().value,
                                 robot.gyro.getZHeading().value);
-    }   //doTestSensors
+    }   //doSensorsTest
+
+    private void doMotorsTest()
+    {
+        dashboard.displayPrintf(9, "Motors Test: motorIndex=%d", motorIndex);
+        dashboard.displayPrintf(10, "Enc: LF=%d, RF=%d",
+                                robot.motorFrontLeft.getPosition(),
+                                robot.motorFrontRight.getPosition());
+        dashboard.displayPrintf(11, "Enc: LB=%d, RB=%d",
+                                robot.motorBackLeft.getPosition(),
+                                robot.motorBackRight.getPosition());
+        if (sm.isReady())
+        {
+            State state = (State)sm.getState();
+            switch (state)
+            {
+                case START:
+                    switch (motorIndex)
+                    {
+                        case 0:
+                            robot.motorFrontLeft.setPower(0.5);
+                            robot.motorFrontRight.setPower(0.0);
+                            robot.motorBackLeft.setPower(0.0);
+                            robot.motorBackRight.setPower(0.0);
+                            break;
+
+                        case 1:
+                            robot.motorFrontLeft.setPower(0.0);
+                            robot.motorFrontRight.setPower(0.5);
+                            robot.motorBackLeft.setPower(0.0);
+                            robot.motorBackRight.setPower(0.0);
+                            break;
+
+                        case 2:
+                            robot.motorFrontLeft.setPower(0.0);
+                            robot.motorFrontRight.setPower(0.0);
+                            robot.motorBackLeft.setPower(0.5);
+                            robot.motorBackRight.setPower(0.0);
+                            break;
+
+                        case 3:
+                            robot.motorFrontLeft.setPower(0.0);
+                            robot.motorFrontRight.setPower(0.0);
+                            robot.motorBackLeft.setPower(0.0);
+                            robot.motorBackRight.setPower(0.5);
+                            break;
+                    }
+                    motorIndex = (motorIndex + 1)%4;
+                    timer.set(5.0, event);
+                    sm.addEvent(event);
+                    sm.waitForEvents(State.START);
+                    break;
+
+                case DONE:
+                default:
+                    sm.stop();
+                    break;
+            }
+        }
+    }   //doMotorsTest
 
     private void doTimedDrive(double time)
     {

@@ -60,6 +60,8 @@ public class FtcTeleOp extends FtcOpMode implements FtcGamepad.ButtonHandler
         double leftPower = driverGamepad.getLeftStickY(true);
         double rightPower = driverGamepad.getRightStickY(true);
         robot.driveBase.tankDrive(leftPower, rightPower);
+        double liftPower = operatorGamepad.getRightStickY(true);
+        robot.stringMotor.setPower(liftPower);
     }   //runPeriodic
 
     @Override
@@ -96,15 +98,45 @@ public class FtcTeleOp extends FtcOpMode implements FtcGamepad.ButtonHandler
             switch (btnMask)
             {
                 case FtcGamepad.GAMEPAD_A:
+                    if (pressed)
+                    {
+                        robot.arm.setPosition(robot.ARM_EXTEND);
+                    }
                     break;
 
                 case FtcGamepad.GAMEPAD_Y:
+                    if (pressed)
+                    {
+                        robot.arm.setPosition(robot.ARM_RETRACT);
+                    }
                     break;
 
                 case FtcGamepad.GAMEPAD_X:
+                    if (pressed)
+                    {
+                        robot.claw.setPosition(robot.CLAW_EXTEND);
+                    }
                     break;
 
                 case FtcGamepad.GAMEPAD_B:
+                    if (pressed)
+                    {
+                        robot.claw.setPosition(robot.CLAW_RETRACT);
+                    }
+                    break;
+
+                case FtcGamepad.GAMEPAD_DPAD_UP:
+                    if (pressed)
+                    {
+                        robot.scissorLift.setPosition(robot.LIFT_EXTEND);
+                    }
+                    break;
+
+                case FtcGamepad.GAMEPAD_DPAD_DOWN:
+                    if (pressed)
+                    {
+                        robot.scissorLift.setPosition(robot.LIFT_RETRACT);
+                    }
                     break;
             }
         }
