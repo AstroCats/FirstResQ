@@ -67,12 +67,14 @@ public class FtcAuto extends FtcOpMode implements FtcMenu.MenuButtons
         delayMenu.addChoice("4 sec", 4.0, strategyMenu);
         delayMenu.addChoice("8 sec", 8.0, strategyMenu);
         delayMenu.addChoice("10 sec", 10.0, strategyMenu);
+        delayMenu.addChoice("12 sec", 12.0, strategyMenu);
+        delayMenu.addChoice("15 sec", 15.0, strategyMenu);
 
         strategyMenu.addChoice("Do nothing", AutoStrategy.DO_NOTHING);
         strategyMenu.addChoice("Park Mountain", AutoStrategy.PARK_MOUNTAIN);
 
         //
-        // Walk the menu tree starting with the delay menu as the root
+        // Walk the menu tree starting with the alliance menu as the root
         // menu and get user choices.
         //
         FtcMenu.walkMenuTree(allianceMenu);
