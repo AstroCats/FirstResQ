@@ -17,13 +17,13 @@ public class FtcRobot implements TrcPidController.PidInput
     //
     // PID drive constants.
     //
-    private static final double DRIVE_KP                = 0.04;
+    private static final double DRIVE_KP                = 0.1;
     private static final double DRIVE_KI                = 0.0;
     private static final double DRIVE_KD                = 0.0;
     private static final double DRIVE_KF                = 0.0;
     private static final double DRIVE_TOLERANCE         = 1.0;
     private static final double DRIVE_SETTLING          = 0.2;
-    private static final double DRIVE_INCHES_PER_TICK   = (67.0/4941.0);
+    private static final double DRIVE_INCHES_PER_TICK   = (50.0/14120);
 
     //
     // PID turn constants.
