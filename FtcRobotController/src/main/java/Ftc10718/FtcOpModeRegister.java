@@ -56,6 +56,7 @@ public class FtcOpModeRegister implements OpModeRegister
          */
         manager.register("Autonomous", Autonomous.class);
         manager.register("DriverMode", DriverMode.class);
+        manager.register("DriverMode2", DriverMode2.class);
         manager.register("FtcAuto", FtcAuto.class);
         manager.register("FtcTeleOp", FtcTeleOp.class);
         manager.register("FtcTest", FtcTest.class);

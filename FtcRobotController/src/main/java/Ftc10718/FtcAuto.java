@@ -117,7 +117,7 @@ public class FtcAuto extends FtcOpMode implements FtcMenu.MenuButtons
                     break;
 
                 case GO_FORWARD:
-                    robot.pidDrive.setTarget(55.0, 0.0, false, event);
+                    robot.pidDrive.setTarget(-55.0, 0.0, false, event);
                     sm.addEvent(event);
                     sm.waitForEvents(ParkMountainState.TURN_TO_MOUNTAIN);
                     break;
@@ -132,7 +132,7 @@ public class FtcAuto extends FtcOpMode implements FtcMenu.MenuButtons
                     break;
 
                 case GO_UP_MOUNTAIN:
-                    robot.pidDrive.setTarget(-50.0, 0.0, false, event);
+                    robot.pidDrive.setTarget(50.0, 0.0, false, event);
                     sm.addEvent(event);
                     sm.waitForEvents(ParkMountainState.DONE);
                     break;
